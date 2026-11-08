@@ -37,20 +37,39 @@ jobs:
       run: |
         echo "=== Environment Info ==="
         python -V
-        pip list | grep -iE "pytest|pydantic|sqlalchemy|scikit" || true
-        echo "=== Running Pytest with Details ==="
-        python -m pytest -v --tb=short 2>&1 | tee pytest_run.log
-        TEST_EXIT=${PIPESTATUS[0]}
-        if [ $TEST_EXIT -ne 0 ]; then
-          echo "Pytest exited with code: $TEST_EXIT"
-          LOG_SNIPPET=$(tail -n 20 pytest_run.log | tr '\n' ' ')
-          echo "::error title=Pytest Failed Exit Code $TEST_EXIT::$LOG_SNIPPET"
-          echo "## Pytest Run Log" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat pytest_run.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          exit $TEST_EXIT
+        python -c "import sys; print('Python sys.path:', sys.path)"
+        
+        echo "=== Pytest Collect Only ==="
+        python -m pytest --collect-only 2>&1 | tee collect.log || true
+        
+        echo "=== Pytest Execution ==="
+        python -m pytest -v --tb=short 2>&1 | tee pytest_run.log || true
+        
+        if grep -q "passed" pytest_run.log && ! grep -q "FAILED" pytest_run.log && ! grep -q "ERROR" pytest_run.log; then
+          echo "All tests passed successfully!"
+          exit 0
         fi
+        
+        ERR_SNIPPET=$(grep -E "ERROR|FAILED|ModuleNotFoundError|ImportError|Exception" pytest_run.log collect.log | head -n 5 | tr '\n' ' | ')
+        echo "::error title=Pytest Error::${ERR_SNIPPET:-Pytest collection failed}"
+        echo "## Pytest Collection Log" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat collect.log >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "## Pytest Run Log" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat pytest_run.log >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        exit 1
+
+    - name: Upload Test Logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-logs
+        path: |
+          collect.log
+          pytest_run.log
 
   frontend-build:
     runs-on: ubuntu-latest
