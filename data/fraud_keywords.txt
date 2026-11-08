@@ -1,0 +1,50 @@
+# TrustLens Fraud Keywords Dictionary
+# Format: keyword:severity_weight (HIGH = 1.0, MEDIUM = 0.6, LOW = 0.3)
+replica:HIGH
+1:1 replica:HIGH
+counterfeit:HIGH
+fake:HIGH
+knockoff:HIGH
+clone:HIGH
+first copy:HIGH
+master copy:HIGH
+mirror quality:HIGH
+ua quality:HIGH
+unauthorized authentic:HIGH
+superclone:HIGH
+aa quality:HIGH
+aaa grade:HIGH
+oem factory:MEDIUM
+overrun:MEDIUM
+gray market:MEDIUM
+parallel import:MEDIUM
+factory reject:MEDIUM
+defective batch:MEDIUM
+b-grade:MEDIUM
+jailbroken:MEDIUM
+bypassed icloud:HIGH
+icloud locked:HIGH
+imei blocked:HIGH
+blacklisted:HIGH
+stolen:HIGH
+not genuine:HIGH
+non genuine:HIGH
+looks authentic:MEDIUM
+no receipt:LOW
+cash only:HIGH
+wire transfer only:HIGH
+telegram me:HIGH
+whatsapp me:HIGH
+pay offline:HIGH
+friends and family paypal:HIGH
+crypto only:HIGH
+zelle only:HIGH
+contact outside app:HIGH
+dm on instagram:MEDIUM
+gift card payment:HIGH
+no refund:MEDIUM
+urgent sale:LOW
+must go today:LOW
+won in lottery:HIGH
+customs seized:HIGH
+fell off truck:HIGH

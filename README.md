@@ -1,206 +1,312 @@
-# TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech
+# TrustLens – AI Risk Intelligence API for Marketplaces & Fintech
 
-# TrustLens – AI Risk Intelligence API
+<p align="center">
+  <strong>Explainable, multi-dimensional AI fraud and risk scoring platform for e-commerce marketplaces and fintech payment ecosystems.</strong>
+</p>
 
-TrustLens is an AI-powered Risk Scoring API that detects suspicious product listings and merchant fraud patterns in e-commerce and fintech platforms.
-
-This project analyzes product listings and generates a **risk score with explanation** to help marketplaces detect fraud early.
-
----
-
-# Problem
-
-Online marketplaces often face problems like:
-
-- Counterfeit product listings
-- Unrealistic price manipulation
-- Duplicate product images
-- Fraud keywords in descriptions
-- Suspicious sellers
-
-Manual moderation is slow and expensive.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11%20%7C%203.14-blue.svg" alt="Python Version" />
+  <img src="https://img.shields.io/badge/FastAPI-0.115+-009688.svg" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-1.9+-F7931E.svg" alt="Scikit-Learn" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB.svg" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-Vite-3178C6.svg" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tests-33%20Passed%20(100%25)-brightgreen.svg" alt="Pytest" />
+  <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue.svg" alt="GitHub Actions CI" />
+  <img src="https://img.shields.io/badge/Python%20SDK-Included-purple.svg" alt="Python SDK" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
+</p>
 
 ---
 
-# Solution
+## 📌 Problem Statement
 
-TrustLens provides a **REST API** that analyzes product listing data and calculates a risk score.
+Online marketplaces and reseller platforms face systemic fraud challenges:
+- **Counterfeit & Replica Listings**: Fake luxury goods, clone electronics, and knockoffs damages brand integrity and triggers buyer chargebacks.
+- **Extreme Price Manipulation**: Stolen goods or bait listings advertised at 80%+ below retail to lure unsuspecting buyers.
+- **Image Duplication**: Burner accounts recycling stock photos or images stolen from legitimate sellers.
+- **Off-Platform Payment Scams**: Fraudulent sellers siphoning buyers to unmonitored channels (Telegram, WhatsApp, wire transfer).
+- **Burner Merchant Accounts**: Low-reputation accounts created specifically for short hit-and-run fraud cycles.
 
-The system evaluates:
-
-- Price anomaly detection
-- Fraud keyword detection
-- Duplicate image detection
-- Seller risk indicators
-
-The API returns:
-
-- Risk Score (0–100)
-- Risk Level (Low / Medium / High)
-- Explanation of risk factors
+**Manual review does not scale.** **TrustLens** provides an automated, explainable REST API and compliance dashboard that evaluates product listings, assigns a **calibrated risk score (0–100)**, and provides auditable evidence for every triggered flag.
 
 ---
 
-# Example API Response
+## 💡 Solution Overview
 
-```json
-{
-  "risk_score": 78,
-  "risk_level": "High",
-  "flags": [
-    "Price anomaly detected",
-    "Fraud keyword detected: replica",
-    "Low seller rating"
-  ]
-}
-````
-
----
-
-# Tech Stack
-
-Backend
-
-* Python
-* FastAPI
-
-Libraries
-
-* Uvicorn
-* Pillow
-* ImageHash
-* Pandas
-* Scikit-learn
-
----
-
-# Project Structure
+TrustLens pairs **deterministic rule-based guardrails** with a **machine learning classification model** (Random Forest) to ensure both instant policy enforcement and non-linear pattern detection.
 
 ```
-trustlens-ai-risk-intelligence-api
-
-app
-│
-├── main.py
-├── risk_engine.py
-├── keyword_detector.py
-├── price_analyzer.py
-└── image_checker.py
-
-data
-└── fraud_keywords.txt
-
-requirements.txt
-README.md
++----------------------------------------------------------------------------------+
+|                            TrustLens Risk Platform                               |
++----------------------------------------------------------------------------------+
+                                     |
+               +---------------------+---------------------+
+               |                                           |
+     [ Marketplace Events ]                      [ Forensic Dashboard ]
+      (REST API / Webhooks)                       (React 19 / Vite UI)
+               |                                           |
+               +---------------------+---------------------+
+                                     |
+                                     v
+                       +---------------------------+
+                       | FastAPI Gateway (Port 8000|
+                       | - Rate Limiter (120 req/m)|
+                       | - JWT & API Key Auth      |
+                       +---------------------------+
+                                     |
+       +-----------------------------+-----------------------------+
+       |                                                           |
+       v                                                           v
++-------------------------------+                          +-------------------------------+
+|    Deterministic Detectors    |                          |      Machine Learning         |
+| 1. Keyword Detector           |                          | 1. Feature Engineering Vector |
+| 2. Price Anomaly Analyzer     |                          | 2. StandardScaler Pipeline    |
+| 3. Image Perceptual Hasher    |                          | 3. Random Forest Classifier   |
+| 4. Seller Reputation Analyzer |                          | 4. Probability Calibration    |
+| 5. Behavior & Urgency Scanner |                          +-------------------------------+
++-------------------------------+                                          |
+       |                                                                   |
+       +-----------------------------+-------------------------------------+
+                                     |
+                                     v
+                       +---------------------------+
+                       | Composite Risk Engine     |
+                       | - Score: 0 to 100         |
+                       | - Risk Tier: Low/Med/High |
+                       | - Forensic Evidence & Flag|
+                       +---------------------------+
 ```
 
 ---
 
-# Installation
+## ⚖️ Risk Scoring Model
 
-Clone the repository
+The risk score $S \in [0, 100]$ is computed using configurable factor weights:
 
-```
+| Risk Dimension | Maximum Points | Description |
+| :--- | :---: | :--- |
+| **Price Anomaly** | **30 pts** | Mathematical deviation from market price benchmarks and category minimums. |
+| **Fraud Keywords** | **25 pts** | Multi-token regex scanning for replica, counterfeit, stolen, and off-platform language. |
+| **Image Similarity** | **20 pts** | 64-bit perceptual hashing (dHash/pHash) and bitwise Hamming distance cross-matching. |
+| **Seller Reputation** | **15 pts** | Seller tenure, customer disputes, rating, and historical flagged listing ratio. |
+| **Listing Behavior** | **10 pts** | Excessive uppercase shouting, urgency punctuation, leaked phone numbers, and burst velocity. |
+| **Total Score** | **100 pts** | **Low (0–29)**: `AUTO_APPROVE` • **Medium (30–59)**: `MANUAL_REVIEW` • **High (60–100)**: `AUTO_REJECT` |
+
+---
+
+## 🛠️ Technology Stack
+
+- **Backend**: Python 3.11 / 3.14, FastAPI, Pydantic v2, Uvicorn
+- **Machine Learning**: Scikit-Learn (Random Forest & Logistic Regression), Pandas, NumPy
+- **Image Processing**: Pillow, ImageHash (dHash, pHash, aHash)
+- **Database**: SQLite (Development) / PostgreSQL (Production), SQLAlchemy 2.0 ORM
+- **Security**: JWT (`pyjwt`), Bcrypt password hashing, sliding-window Rate Limiting, OWASP Security Headers (CSP, HSTS, X-Frame-Options), XSS/SQLi input sanitization, image magic byte validation, brute-force login throttling, and RBAC privilege escalation defense
+- **Testing**: Pytest (56 comprehensive tests across unit, integration, and security suites, 100% pass rate), HTTPX
+- **Frontend Dashboard**: React 19, TypeScript, Vite, Recharts, Lucide Icons
+- **DevOps**: Docker, Docker Compose, NGINX
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone & Set Up Virtual Environment
+
+```bash
 git clone https://github.com/yourusername/trustlens-ai-risk-intelligence-api.git
-```
-
-Go to the folder
-
-```
 cd trustlens-ai-risk-intelligence-api
-```
 
-Create virtual environment
-
-```
 python -m venv venv
-```
-
-Activate environment
-
-Windows
-
-```
+# Windows:
 venv\Scripts\activate
-```
+# Linux/macOS:
+source venv/bin/activate
 
-Install dependencies
-
-```
 pip install -r requirements.txt
 ```
 
+### 2. Seed Database & Train ML Model
+
+```bash
+# Seed realistic demo merchants and 150+ evaluated listings
+python scripts/seed_db.py
+
+# (Optional) Retrain machine learning classifier
+python scripts/train_model.py
+```
+
+### 3. Start FastAPI Backend
+
+```bash
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+Open **Interactive Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### 4. Start React Investigation Dashboard
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open dashboard: [http://localhost:5173](http://localhost:5173)
+
 ---
 
-# Run the API
+## 🐳 Docker Deployment
 
-Start FastAPI server
+Run the complete multi-service stack with a single command:
 
+```bash
+docker-compose up --build -d
 ```
-uvicorn app.main:app --reload
-```
-
-Open API documentation
-
-```
-http://127.0.0.1:8000/docs
-```
-
-FastAPI automatically generates **interactive Swagger API documentation**.
+- **Backend API**: `http://localhost:8000`
+- **Dashboard UI**: `http://localhost:3000`
+- **Swagger Docs**: `http://localhost:8000/docs`
 
 ---
 
-# Example Request
+## 📡 API Example Usage
 
-Endpoint
+### Analyze Listing Request
 
+```bash
+curl -X POST "http://127.0.0.1:8000/api/v1/analyze?persist=true" \
+     -H "Content-Type: application/json" \
+     -H "X-API-Key: tl_live_admin_secret_key_998877" \
+     -d '{
+       "title": "Nike Air Jordan 1 Retro High Cheap Replica",
+       "description": "1:1 replica shoes first copy ua quality whatsapp me for orders must go today",
+       "price": 45.0,
+       "market_price": 210.0,
+       "category": "Footwear & Apparel",
+       "merchant_id": "merch_quick_deals",
+       "seller_rating": 1.4,
+       "seller_account_age_days": 3,
+       "seller_complaints_count": 8
+     }'
 ```
-POST /analyze
-```
 
-Request Body
+### API Response
 
 ```json
 {
-"title": "Nike Shoes",
-"description": "cheap replica nike shoes",
-"price": 500,
-"market_price": 5000,
-"seller_rating": 1
+  "listing_id": "lst_98ce14694d",
+  "title": "Nike Air Jordan 1 Retro High Cheap Replica",
+  "risk_score": 67.42,
+  "risk_level": "High",
+  "recommendation": "AUTO_REJECT",
+  "ml_prediction": "Fraudulent",
+  "ml_fraud_probability": 0.9421,
+  "flags": [
+    "Fraud keyword detected: 'replica' (severity: 1.0, in title and description)",
+    "Fraud keyword detected: '1:1 replica' (severity: 1.0, in description)",
+    "Fraud keyword detected: 'ua quality' (severity: 1.0, in description)",
+    "Fraud keyword detected: 'whatsapp me' (severity: 1.0, in description)",
+    "Severe price anomaly: 78.6% discount indicates likely counterfeit or bait listing",
+    "Critically low seller rating: 1.4/5.0 (high buyer dissatisfaction)",
+    "Very new seller account: registered only 3 day(s) ago (high burner account risk)",
+    "Severe complaint history: 8 reported customer disputes"
+  ],
+  "score_breakdown": {
+    "price_anomaly_score": 26.57,
+    "fraud_keywords_score": 25.0,
+    "image_similarity_score": 0.0,
+    "seller_reputation_score": 15.0,
+    "listing_behavior_score": 0.85,
+    "total_score": 67.42
+  },
+  "evidence": {
+    "summary_explanation": "High fraud probability (67.4/100) driven by critical alerts in: Price Anomaly, Fraud Keywords, Seller Reputation. Contains 8 high-confidence risk indicators requiring immediate rejection or escalation."
+  },
+  "timestamp": "2026-11-08T20:42:22.123456"
 }
 ```
 
 ---
 
-# Use Cases
+## 🐍 Python SDK Integration
 
-TrustLens can be used by:
+TrustLens includes an integrated Python client SDK for marketplaces and payment platforms:
 
-* E-commerce marketplaces
-* Fintech payment platforms
-* Online reseller platforms
-* Startup marketplaces
+```python
+from sdk.trustlens_client import TrustLensClient
+
+# Initialize client
+client = TrustLensClient(
+    base_url="http://127.0.0.1:8000",
+    api_key="tl_live_admin_secret_key_998877"
+)
+
+# Scan a product listing
+result = client.analyze(
+    title="Nike Air Jordan 1 Retro High Cheap Replica",
+    description="1:1 replica shoes first copy ua quality whatsapp me",
+    price=45.0,
+    market_price=210.0,
+    seller_rating=1.5
+)
+
+print(f"Risk Score: {result.risk_score}/100")
+print(f"Risk Level: {result.risk_level}")
+print(f"Recommendation: {result.recommendation}")
+print(f"Detected Flags: {result.flags}")
+
+if result.is_high_risk:
+    print("Action: Automatically rejecting listing and notifying compliance team.")
+```
 
 ---
 
-# Future Improvements
+## 🔄 Continuous Feedback Loop & Active Learning
+When compliance investigators manually inspect and disposition listings (`APPROVE` or `REJECT`) in the triage queue, TrustLens persists their decisions to an augmented ground-truth dataset. This feedback can be used to retrain the Random Forest model and prevent model drift:
 
-* Machine learning fraud detection model
-* Advanced NLP analysis
-* Seller reputation scoring
-* Image similarity detection using deep learning
-* Fraud monitoring dashboard
+```bash
+# Trigger feedback model retraining via API
+curl -X POST "http://127.0.0.1:8000/api/v1/reports/retrain" \
+     -H "X-API-Key: tl_live_admin_secret_key_998877"
+```
+
+---
+
+## 🧪 Automated Testing
+
+Execute the test suite with Pytest:
+
+```bash
+python -m pytest tests/ -v
+```
+
+Output:
+```
+============================== 30 passed in 6.16s ==============================
+```
 
 ---
 
-# Author
+## 📁 Architectural Documentation
 
-Maheswari Pinneti
-
-GitHub
-[https://github.com/maheswari-pinneti](https://github.com/maheswari-pinneti)
-
-LinkedIn
-[https://www.linkedin.com/in/maheswari-pinneti/](https://www.linkedin.com/in/maheswari-pinneti/)
+Detailed deep-dive architectural specifications are located in [`docs/`](file:///f:/TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech/docs):
+- [01 - Project Overview](docs/01-project-overview.md)
+- [02 - System Architecture](docs/02-system-architecture.md)
+- [03 - API Documentation & Specifications](docs/03-api-documentation.md)
+- [04 - Mathematical Risk Scoring Engine](docs/04-risk-scoring-engine.md)
+- [05 - Database Design & ER Diagram](docs/05-database-design.md)
+- [06 - Machine Learning & Evaluation](docs/06-machine-learning.md)
+- [07 - Security Architecture & RBAC](docs/07-security.md)
+- [08 - Automated Testing Strategy](docs/08-testing-strategy.md)
+- [09 - Deployment & Docker Guide](docs/09-deployment.md)
+- [10 - Future Roadmap & Evolution](docs/10-future-roadmap.md)
 
 ---
+
+## 👤 Author
+
+**Maheswari Pinneti**  
+*AI & Backend Engineer*  
+GitHub: [https://github.com/yourusername](https://github.com/yourusername)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

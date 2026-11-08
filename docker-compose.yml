@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trustlens_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=sqlite:///./data/trustlens.db
+      - SECRET_KEY=trustlens-prod-secret-change-in-real-deployment
+      - ADMIN_API_KEY=tl_live_admin_secret_key_998877
+      - RATE_LIMIT_PER_MINUTE=120
+    volumes:
+      - trustlens_data:/app/data
+      - ./app/ml/models:/app/app/ml/models
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trustlens_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  trustlens_data:
+    driver: local
