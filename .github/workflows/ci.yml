@@ -33,8 +33,24 @@ jobs:
         python scripts/seed_db.py
 
     - name: Run Pytest Test Suite
+      shell: bash
       run: |
-        python -m pytest -v
+        echo "=== Environment Info ==="
+        python -V
+        pip list | grep -iE "pytest|pydantic|sqlalchemy|scikit" || true
+        echo "=== Running Pytest with Details ==="
+        python -m pytest -v --tb=short 2>&1 | tee pytest_run.log
+        TEST_EXIT=${PIPESTATUS[0]}
+        if [ $TEST_EXIT -ne 0 ]; then
+          echo "Pytest exited with code: $TEST_EXIT"
+          LOG_SNIPPET=$(tail -n 20 pytest_run.log | tr '\n' ' ')
+          echo "::error title=Pytest Failed Exit Code $TEST_EXIT::$LOG_SNIPPET"
+          echo "## Pytest Run Log" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat pytest_run.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit $TEST_EXIT
+        fi
 
   frontend-build:
     runs-on: ubuntu-latest
