@@ -5,7 +5,13 @@
   "private": true,
   "scripts": {
     "dev": "npm --prefix frontend run dev",
+    "frontend": "npm --prefix frontend run dev",
+    "server": "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "backend": "python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
     "build": "npm --prefix frontend run build",
+    "test": "python -m pytest",
+    "seed": "python scripts/seed_db.py",
+    "train": "python scripts/train_model.py",
     "preview": "npm --prefix frontend run preview",
     "lint": "npm --prefix frontend run lint"
   },
