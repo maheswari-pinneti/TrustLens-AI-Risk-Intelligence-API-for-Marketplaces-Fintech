@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "algorithm": "RandomForestClassifier",
-  "trained_at": "2026-11-08T16:06:23.871362",
+  "trained_at": "2026-11-08T16:27:05.423243",
   "training_samples": 480,
   "test_samples": 120,
   "evaluation_metrics": {
