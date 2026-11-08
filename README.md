@@ -10,8 +10,8 @@
   <img src="https://img.shields.io/badge/Scikit--Learn-1.9+-F7931E.svg" alt="Scikit-Learn" />
   <img src="https://img.shields.io/badge/React-19-61DAFB.svg" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-Vite-3178C6.svg" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tests-33%20Passed%20(100%25)-brightgreen.svg" alt="Pytest" />
-  <img src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue.svg" alt="GitHub Actions CI" />
+  <img src="https://img.shields.io/badge/Tests-60%20Passed%20(100%25)-brightgreen.svg" alt="Pytest" />
+  <a href="https://github.com/maheswari-pinneti/TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech/actions/workflows/ci.yml"><img src="https://github.com/maheswari-pinneti/TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech/actions/workflows/ci.yml/badge.svg" alt="TrustLens CI" /></a>
   <img src="https://img.shields.io/badge/Python%20SDK-Included-purple.svg" alt="Python SDK" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
@@ -101,7 +101,7 @@ The risk score $S \in [0, 100]$ is computed using configurable factor weights:
 - **Image Processing**: Pillow, ImageHash (dHash, pHash, aHash)
 - **Database**: SQLite (Development) / PostgreSQL (Production), SQLAlchemy 2.0 ORM
 - **Security**: JWT (`pyjwt`), Bcrypt password hashing, sliding-window Rate Limiting, OWASP Security Headers (CSP, HSTS, X-Frame-Options), XSS/SQLi input sanitization, image magic byte validation, brute-force login throttling, and RBAC privilege escalation defense
-- **Testing**: Pytest (56 comprehensive tests across unit, integration, and security suites, 100% pass rate), HTTPX
+- **Testing**: Pytest (60 comprehensive tests across unit, integration, and security suites, 100% pass rate), HTTPX
 - **Frontend Dashboard**: React 19, TypeScript, Vite, Recharts, Lucide Icons
 - **DevOps**: Docker, Docker Compose, NGINX
 
@@ -112,8 +112,8 @@ The risk score $S \in [0, 100]$ is computed using configurable factor weights:
 ### 1. Clone & Set Up Virtual Environment
 
 ```bash
-git clone https://github.com/yourusername/trustlens-ai-risk-intelligence-api.git
-cd trustlens-ai-risk-intelligence-api
+git clone https://github.com/maheswari-pinneti/TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech.git
+cd TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech
 
 python -m venv venv
 # Windows:
@@ -278,14 +278,14 @@ python -m pytest tests/ -v
 
 Output:
 ```
-============================== 30 passed in 6.16s ==============================
+============================= 60 passed in 14.16s =============================
 ```
 
 ---
 
 ## 📁 Architectural Documentation
 
-Detailed deep-dive architectural specifications are located in [`docs/`](file:///f:/TrustLens-AI-Risk-Intelligence-API-for-Marketplaces-Fintech/docs):
+Detailed deep-dive architectural specifications are located in [`docs/`](docs):
 - [01 - Project Overview](docs/01-project-overview.md)
 - [02 - System Architecture](docs/02-system-architecture.md)
 - [03 - API Documentation & Specifications](docs/03-api-documentation.md)
@@ -303,7 +303,7 @@ Detailed deep-dive architectural specifications are located in [`docs/`](file://
 
 **Maheswari Pinneti**  
 *AI & Backend Engineer*  
-GitHub: [https://github.com/yourusername](https://github.com/yourusername)
+GitHub: [https://github.com/maheswari-pinneti](https://github.com/maheswari-pinneti)
 
 ---
 
