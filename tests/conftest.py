@@ -1,6 +1,14 @@
 """
 Pytest Test Fixtures and Test Environment Setup
 """
+import sys
+from pathlib import Path
+
+# Ensure project root is available in sys.path on all platforms & runners
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -28,7 +36,7 @@ def db_session():
     # Seed test users
     admin = User(
         username="testadmin",
-        email="testadmin@test.local",
+        email="testadmin@example.com",
         hashed_password=hash_password("TestAdmin123!"),
         role="admin",
         api_key="tl_test_admin_key_123",
@@ -36,7 +44,7 @@ def db_session():
     )
     analyst = User(
         username="testanalyst",
-        email="testanalyst@test.local",
+        email="testanalyst@example.com",
         hashed_password=hash_password("TestAnalyst123!"),
         role="analyst",
         api_key="tl_test_analyst_key_456",
